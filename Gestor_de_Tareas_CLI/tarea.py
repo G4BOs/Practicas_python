@@ -22,12 +22,35 @@ def cargar_json():
 # ============================================================================|
 # Agregar tarea
 @app.command()
-def agg(tarea: str):
-    lista_de_tareas.append([{"tarea": tarea}])
+def agregar(tarea: str):
+    tarea_obj = {
+        "tarea": tarea,
+        "completo": False,
+        "id": lista_de_tareas[-1]["id"] +1
+    }
+    lista_de_tareas.append(tarea_obj)
     cargar_json()
     print("Tarea agregada. ")
+# ----------------------------------------------/
 
+# Quitar tarea
+@app.command()
+def quitar (id: int):
+    for n in lista_de_tareas:
+        if n["id"] == id:
+            del lista_de_tareas[ lista_de_tareas.index(n)]
+    cargar_json()
 
+@app.command()
+def marcar(id: int):
+    for n in lista_de_tareas:
+        if n["id"] == id:
+            n["completo"] = True
+    cargar_json()
+
+@app.command()
+def ver(inc: bool=False):
+    print(f"Tareas:\n{'\n'.join([f"\n[{t["tarea"]}]\n[id: {t["id"]} Completo: {'Si' if t["completo"] else "No"}]" for t in lista_de_tareas])}")
 
 # ****************************************************************************|
 @app.callback()
